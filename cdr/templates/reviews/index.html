@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+
+{% block header %}
+  <h1>{% block title %}Home{% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+<main>
+	<div class="home-text">
+		<h1 class="page_intro text-center">View Dining Halls</h1>
+		<!--{% for x in raters %}
+		<p>Rater is {{ x.firstname }}</p>
+		{% endfor %}
+		<p>{{ one_meal }}</p>
+		{% for x in dhall_list %}
+		<p></p><a href="dining-halls/{{ x.link }}">{{ x.dname }}</a></p>
+		{% endfor %}-->
+		<div class="row">
+		{% for hall in halls %}
+		<div class="col-sm-6 text-center py-2">
+		<h3><div>
+			<a class="hall-link" href="{{ url_for('reviews.hallpage', hallname=hall.hallname, order=0) }}">{{ hall.hallname }}</a></div>
+		</h3></div>
+		{% endfor %}
+		</div>
+	</div>
+</main>
+<script>
+
+	// var app = angular.module('myApp', []);
+	// app.controller('myCtrl', function($scope) {
+
+	//     $scope.firstname = "John";
+	//     $scope.changeColor() = function() {
+	//     	  let htmlElements = angular.getElementsByClassName("hall-link");
+	// 				for (let i = 0; i < htmlElements.length; i++) {
+	// 						htmlElements[i].classList.add("color-change");
+	// 				}
+	//     }
+	// });
+	// change = function(event) {
+	// 		element(event.target).addClass('color-change');
+	// }
+	// changeBack = function(event) {
+	// 		element(event.target).removeClass('color-change');
+	// }
+	// link = document.getElementById()
+	// links = document.getElementsByClassName('hall-link');
+	// for (let i = 0; i < links.length; i++) {
+	// 	link = links[i];
+	// 	link.addEventListener("mouseover", change);
+	// 	link.addEventListener("mouseout", changeBack);
+	// }
+
+</script>
+{% endblock %}

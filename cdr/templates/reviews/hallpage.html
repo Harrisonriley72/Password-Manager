@@ -1,0 +1,103 @@
+{% extends "base.html" %}
+
+
+{% block header %}
+<h1>{% block title %} {{ hallname }} {% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+<script>
+	const context = {
+		order: "{{ order }}",
+	};
+</script>
+
+<div class="text-dark hall-page-text">
+<div class="container">
+  <div class="row">
+    <div class="col-sm-4 d-flex justify-content-center">
+		<div class="card my-3">
+		  <div class="card-header">
+		    <h3 class="font-weight-bold">Foods served today</h3>
+		  </div>
+		  <ul class="list-group list-group-flush">
+			{% for foodrate in foodratings %}
+			 <li class="list-group-item">
+			 	<span class="fw-bold">{{foodrate.foodname}}:</span> 
+			 	{% if foodrate.count>1 %}
+			 	{{foodrate.avg}} ({{foodrate.count}} ratings)
+			 	{% elif foodrate.count==1%}
+			 	{{foodrate.avg}} ({{foodrate.count}} rating)
+			 	{% else %}
+			 	No ratings yet.
+			 	{% endif %}
+			 	{% if g.user %}
+			 	<span>
+			 		<form method="POST" action="{{ url_for('reviews.rate_fooditem', foodname=foodrate.foodname, hallname_servedat=hallname, order=order, from_page='hallpage') }}">
+						<label class="fw-normal" for="rate">My Rating (1&ndash;5):</label>
+						<input type="number" id="rate" name="rating" min="1" max="5" value="{{user_ratings_dict[foodrate.foodname]}}">
+						<input type="submit">
+			 		</form>
+			 	</span>
+			 	{% endif %}
+			 </li>
+			{% endfor %}
+		  </ul>
+		</div>    	
+    </div>
+    <div class="col-sm-8 d-flex justify-content-center">   	
+    <div style="width: 85%;">
+    <h2 style="color: #012169;" class="text-center mt-3">Reviews for Today</h2>
+		<form method="POST" action="{{ url_for('reviews.update_order', hallname=hallname) }}">
+			<div class="btn-group btn-group-toggle" data-toggle="buttons">
+			  <label class="btn btn-secondary" id="newestBtnLabel">
+			    <input type="radio" name="options" id="newestBtn" autocomplete="off" value="newest"> Newest
+			  </label>
+			  <label class="btn btn-secondary" id="popBtnLabel">
+			    <input type="radio" name="options" id="popBtn" autocomplete="off" value="popular"> Most Popular
+			  </label>
+			</div>
+			<span><button class="update_order_btn" type="submit">Update order</button></span>
+		</form>
+
+
+
+		<a class="btn btn-primary add_review_btn" role="button" href="{{url_for('reviews.add_review', hallname=hallname)}}">Add a review</a>
+
+
+    	{% for review in reviews %}
+			<div class="card my-2">
+			  <div class="card-header">
+			  	<span class="fw-bold"><a href="{{ url_for('profile.get_profile', email=review.email, order=0)}}">{{review.fname}} {{review.lname}}</a></span>
+			  	<span class="text-right">{{review.time}}</span>
+			  </div>
+			  <div class="card-body">
+			  	<div class="row">
+			  		<div class="col-sm-5"> 
+					  	<p class="fw-bold">Rating: {{review.rating}}<p>
+					  	<div class="mt-3">
+					    <span class="fw-bold">{{review.like_number}} Likes</span>
+					    <a href="{{ url_for('reviews.increment', email=review.email, time=review.time, hallname=hallname, order=order, from_page='hallpage') }}" class="btn btn-secondary mx-3">
+					    	{% if g.user and review.liker_email %}un{% endif %}like
+					    </a>
+					    </div>			  		
+				  	</div>
+
+				  	<div class="col-sm"> 
+					    <p class="card-text">{{review.comment}}</p>
+					</div>
+			    </div>
+			  </div>
+			</div>
+	    
+		{% endfor %}
+		</div>
+	</div>
+  </div>
+</div>
+
+</div>
+
+<script src="{{ url_for('static', filename='reviews.js')}}"></script>
+
+{% endblock %}
